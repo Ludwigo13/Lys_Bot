@@ -1,7 +1,9 @@
-package ludwigo.bot.ffxiv.lys;
+package ffxiv; 
 
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.dv8tion.jda.core.managers.GuildController;
+
+import java.util.List;
 
 import javax.security.auth.login.LoginException;
 
@@ -13,13 +15,14 @@ import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.PrivateChannel;
+import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 public class Lys_bot extends ListenerAdapter{
-
+	Member memberRole; 
 	public static void main(String[] args) {
 		try {
 			new JDABuilder(AccountType.BOT)
@@ -47,13 +50,14 @@ public class Lys_bot extends ListenerAdapter{
 	        String msg = message.getContent();              //This returns a human readable version of the Message. Similar to
 	                                                        // what you would see in the client.
 	        String[] msg2 = msg.split(" ");
-	        String msgpart = msg2[0];
-	        String fname = msg2[2];
-	        String lname = msg2[3];
+	     //   String msgpart = msg2[0];
+	     //   String fname = msg2[2];
+	     //   String lname = msg2[3];
 	        Member member = event.getMember();          //This Member that sent the message. Contains Guild specific information about the User!
 	        Guild guild = event.getGuild();             //The Guild that this message was sent in. (note, in the API, Guilds are Servers)
 	        GuildController guildcontroller = guild.getController();
-	        Member memberRole = member;
+	        List<Role> roles = guild.getRoles();
+	        
 	        
 	        boolean bot = author.isBot();                     //This boolean is useful to determine if the User that
 	                                                        // sent the Message is a BOT or not!
@@ -114,15 +118,17 @@ public class Lys_bot extends ListenerAdapter{
 
 	            channel.sendMessage("!ping Pong!").queue();
 	        }
-	        if (msgpart.equals("!iam"))
+	        if (msg2[0].equals("!iam"))
 	        {
-	        	guildcontroller.setNickname(member, fname + " " + lname).queue();
+	        	guildcontroller.setNickname(member, msg2[2] + " " + msg2[3]).queue();
 	            channel.sendMessage("Nickname Updated").queue();
+	            memberRole = member;
 	            
 	        }
 	        if (msg.equals("Character updated, Kupo!"))
 	        {
-	        	guildcontroller.addRolesToMember(memberRole, roles);
+	        	guildcontroller.addRolesToMember(memberRole, roles.get(2)).queue();
+	        	channel.sendMessage("Bienvenue LYS!")l.queue();
 	        }
 	}
 
